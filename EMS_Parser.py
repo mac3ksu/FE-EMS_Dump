@@ -28,7 +28,8 @@ def status_parse(region, date, worksheet, rtus):
             except:
                 pass
 
-    for rtu in rtus:
+    for i, rtu in enumerate(rtus):
+        print('status {}/{}'.format(i+1, len(rtus)))
         # print(rtu)
         outfile_dir = 'Z:\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
@@ -74,6 +75,7 @@ def control_parse(region, date, worksheet, rtus):
                 pass
 
     for rtu in rtus:
+        print('control {}/{}'.format(i + 1, len(rtus)))
         outfile_dir = 'Z:\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
@@ -116,6 +118,7 @@ def analog_parse(region, date, worksheet, rtus):
                 pass
 
     for rtu in rtus:
+        print('analog {}/{}'.format(i + 1, len(rtus)))
         outfile_dir = 'Z:\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
@@ -160,6 +163,7 @@ def accum_parse(region, date, worksheet, rtus):
                 pass
 
     for rtu in rtus:
+        print('accumulator {}/{}'.format(i + 1, len(rtus)))
         outfile_dir = 'Z:\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
@@ -198,6 +202,7 @@ def anout_parse(region, date, worksheet, rtus):
                 pass
 
     for rtu in rtus:
+        print('analog out {}/{}'.format(i + 1, len(rtus)))
         outfile_dir = 'Z:\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
