@@ -74,7 +74,7 @@ def control_parse(region, date, worksheet, rtus):
             except:
                 pass
 
-    for rtu in rtus:
+    for i, rtu in enumerate(rtus):
         print('control {}/{}'.format(i + 1, len(rtus)))
         outfile_dir = 'Z:\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
@@ -117,7 +117,7 @@ def analog_parse(region, date, worksheet, rtus):
             except:
                 pass
 
-    for rtu in rtus:
+    for i, rtu in enumerate(rtus):
         print('analog {}/{}'.format(i + 1, len(rtus)))
         outfile_dir = 'Z:\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
@@ -162,7 +162,7 @@ def accum_parse(region, date, worksheet, rtus):
             except:
                 pass
 
-    for rtu in rtus:
+    for i, rtu in enumerate(rtus):
         print('accumulator {}/{}'.format(i + 1, len(rtus)))
         outfile_dir = 'Z:\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
@@ -201,7 +201,7 @@ def anout_parse(region, date, worksheet, rtus):
             except:
                 pass
 
-    for rtu in rtus:
+    for i, rtu in enumerate(rtus):
         print('analog out {}/{}'.format(i + 1, len(rtus)))
         outfile_dir = 'Z:\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
@@ -254,11 +254,14 @@ if __name__ == '__main__':
         ems_region = 'SOUTH'
 
     #load EMS dump excel workbook and create List of RTU names
+    print('Opening workbook...')
     wbook = xlrd.open_workbook(file_full_path)
     wsheet = wbook.sheet_by_index(0)
+    print('Grabbing RTU list...')
     rtu_list = grab_rtu_list(wsheet)
 
     #parse through dump file for each RTU
+    print('Beginning parse of spreadsheet...')
     ems_parse(ems_region, dump_date, wbook, rtu_list)
     f_time = time.time()
     print(f_time-s_time)
