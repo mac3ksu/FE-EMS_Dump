@@ -1,12 +1,8 @@
 import os
-import sys
+import time
 import xlrd
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
-#from D20MX_XML_Functions import d20mx_check
-#from D20MPP_XML_Functions import d20mpp_check
-#from D20MEII_XML_Functions import d20meII_check
-#import xml.etree.ElementTree as et
 
 def grab_rtu_list(worksheet):
     rtus_raw = worksheet.col(2)
@@ -233,6 +229,7 @@ def ems_parse(region, date, workbook, rtus):
 
 
 if __name__ == '__main__':
+    s_time = time.time()
     file_dir = Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
     file_full_path = askopenfilename(title='Select EMS Dump Excel file')  # show an "Open" dialog box and return the path to the selected file
     # file_full_path = 'Z:/Clients/TND/FirstEnr/82568_EtfScadaSupprt/Design/Substation Projects/EMS MODEL SCREEN DUMPS/20180301 - SOUTH - SNAPSHOT - TELEMETRY CROSS-REF'
@@ -258,3 +255,5 @@ if __name__ == '__main__':
 
     #parse through dump file for each RTU
     ems_parse(ems_region, dump_date, wbook, rtu_list)
+    f_time = time.time()
+    print(f_time-s_time)
