@@ -84,7 +84,7 @@ def control_parse(region, date, worksheet, rtus):
         outfile = outfile_dir + outfile_name
 
         with open(outfile, 'w+') as output_file:
-            output_file.write('RTU CONTROL,CONTROL,PHYADR_RELAY,EMS CONTROL,ID_CTRL,CTRLFUNC,COMMAND,SEXP,OPTIME,WAIT,TIMEOUT,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
+            output_file.write('STATION,RTU,TYPE_RTU,RTU CONTROL,CONTROL,PHYADR_RELAY,EMS CONTROL,ID_CTRL,CTRLFUNC,COMMAND,SEXP,OPTIME,WAIT,TIMEOUT,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
             for row in rtu_dict[rtu]:
                 output_file.write('{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(
                     worksheet.cell(row, 0).value,
