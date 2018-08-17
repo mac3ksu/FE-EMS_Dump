@@ -254,6 +254,7 @@ if __name__ == '__main__':
         ems_region = 'SOUTH'
 
     #load EMS dump excel workbook and create List of RTU names
+    print(ems_region)
     print('Opening workbook...')
     wbook = xlrd.open_workbook(file_full_path)
     wsheet = wbook.sheet_by_index(0)
