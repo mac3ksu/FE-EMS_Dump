@@ -16,7 +16,7 @@ def grab_rtu_list(worksheet):
     #print(rtus)
     return rtus
 
-def archive_fep_files(region, rtus):
+def archive_fep_files(region, rtus, directory):
     # archive all existing fep/ch/baud dump csv files
     for i, rtu in enumerate(rtus):
         print('archive fep {}/{}'.format(i + 1, len(rtus)))
@@ -24,11 +24,11 @@ def archive_fep_files(region, rtus):
         # if an archive file is not existing inside the specific rtu folder,
         #          create one for the purpose of archiving legacy EMS dumps
         #          archive_dir_dest: archive directory destination
-        archive_dir_dest = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + '_FEP' + '\\' + 'Archive' + '\\'
+        archive_dir_dest = directory + '\\' + region + '\\' + '_FEP' + '\\' + 'Archive' + '\\'
         if not os.path.exists(archive_dir_dest):
             os.makedirs(archive_dir_dest)
 
-        outfile_dir = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + '_FEP' + '\\'
+        outfile_dir = directory + '\\' + region + '\\' + '_FEP' + '\\'
 
         # move all old dump worksheets from inside rtu folder to the archive folder. we want to keep them, but it looks cluttered
         #           this direction will execute before the csv files are created and put into the rtu folder
@@ -37,7 +37,7 @@ def archive_fep_files(region, rtus):
         for file in files2move:
             shutil.move(outfile_dir + file, archive_dir_dest)  # shutil.move(source, destination)
 
-def archive_rtu_files(region, worksheet, rtus):
+def archive_rtu_files(region, worksheet, rtus, directory):
 
     rtu_dict = {}
     for rtu in rtus:
@@ -57,11 +57,11 @@ def archive_rtu_files(region, worksheet, rtus):
         # if an archive file is not existing inside the specific rtu folder,
         #          create one for the purpose of archiving legacy EMS dumps
         #          archive_dir_dest: archive directory destination
-        archive_dir_dest = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\' + 'Archive' + '\\'
+        archive_dir_dest = directory + '\\' + region + '\\' + rtu + '\\' + 'Archive' + '\\'
         if not os.path.exists(archive_dir_dest):
             os.makedirs(archive_dir_dest)
 
-        outfile_dir = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
+        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
 
         # move all old dump worksheets from inside rtu folder to the archive folder. we want to keep them, but it looks cluttered
         #           this direction will execute before the csv files are created and put into the rtu folder
@@ -322,8 +322,8 @@ def anout_parse(region, date, worksheet, rtus, directory):
 
 
 def ems_parse(region, date, workbook, rtus, directory):
-    archive_fep_files(region, rtus)
-    archive_rtu_files(region, workbook.sheet_by_name('BMCD_RTUC and RTU'), rtus)
+    archive_fep_files(region, rtus, directory)
+    archive_rtu_files(region, workbook.sheet_by_name('BMCD_RTUC and RTU'), rtus, directory)
     rtu_fep_parse(region, date, workbook.sheet_by_name('BMCD_RTUC and RTU'), rtus, directory)
     status_parse(region, date, workbook.sheet_by_name('BMCD_STATUS'), rtus, directory)
     control_parse(region, date, workbook.sheet_by_name('BMCD_CONTROL'), rtus, directory)
