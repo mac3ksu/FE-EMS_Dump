@@ -265,4 +265,4 @@ if __name__ == '__main__':
     print('Beginning parse of spreadsheet...')
     ems_parse(ems_region, dump_date, wbook, rtu_list)
     f_time = time.time()
-    print(str(int(f_time-s_time)/60) + ' minutes')
+    print(f_time-s_time)
