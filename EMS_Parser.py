@@ -70,7 +70,7 @@ def archive_rtu_files(region, worksheet, rtus):
         for file in files2move:
             shutil.move(outfile_dir + file, archive_dir_dest)  # shutil.move(source, destination)
 
-def rtu_fep_parse(region, date, worksheet, rtus):
+def rtu_fep_parse(region, date, worksheet, rtus, directory):
     rtu_dict = {}
     for rtu in rtus:
         rtu_dict[rtu] = []
@@ -86,7 +86,7 @@ def rtu_fep_parse(region, date, worksheet, rtus):
     for i, rtu in enumerate(rtus):
         print('fep/ch/baud {}/{}'.format(i + 1, len(rtus)))
 
-        outfile_dir = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + '_FEP' + '\\'
+        outfile_dir = directory + '\\' + region + '\\' + '_FEP' + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
 
@@ -109,7 +109,7 @@ def rtu_fep_parse(region, date, worksheet, rtus):
                     worksheet.cell(row, 5).value,
                 ))
 
-def status_parse(region, date, worksheet, rtus):
+def status_parse(region, date, worksheet, rtus, directory):
     rtu_dict = {}
     for rtu in rtus:
         rtu_dict[rtu] = []
@@ -121,13 +121,10 @@ def status_parse(region, date, worksheet, rtus):
             except:
                 pass
 
-    # for all rtus in the ems dump excel doc, create a csv file to host the ems dump status points
     for i, rtu in enumerate(rtus):
-        print('status {}/{}'.format(i+1, len(rtus)))
+        print('status {} {}/{}'.format(rtu, i+1, len(rtus)))
         # print(rtu)
-
-        # if an ems dump file for a specific rtu is not existing inside the location folder, create one
-        outfile_dir = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
+        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
 
@@ -161,7 +158,7 @@ def status_parse(region, date, worksheet, rtus):
         # print(rtu + ' completed')
 
 
-def control_parse(region, date, worksheet, rtus):
+def control_parse(region, date, worksheet, rtus, directory):
     rtu_dict = {}
     for rtu in rtus:
         rtu_dict[rtu] = []
@@ -174,8 +171,8 @@ def control_parse(region, date, worksheet, rtus):
                 pass
 
     for i, rtu in enumerate(rtus):
-        print('control {}/{}'.format(i + 1, len(rtus)))
-        outfile_dir = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
+        print('control {} {}/{}'.format(rtu, i + 1, len(rtus)))
+        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
 
@@ -204,7 +201,7 @@ def control_parse(region, date, worksheet, rtus):
                 ))
 
 
-def analog_parse(region, date, worksheet, rtus):
+def analog_parse(region, date, worksheet, rtus, directory):
     rtu_dict = {}
     for rtu in rtus:
         rtu_dict[rtu] = []
@@ -217,8 +214,8 @@ def analog_parse(region, date, worksheet, rtus):
                 pass
 
     for i, rtu in enumerate(rtus):
-        print('analog {}/{}'.format(i + 1, len(rtus)))
-        outfile_dir = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
+        print('analog {} {}/{}'.format(rtu, i + 1, len(rtus)))
+        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
 
@@ -249,7 +246,7 @@ def analog_parse(region, date, worksheet, rtus):
                 ))
 
 
-def accum_parse(region, date, worksheet, rtus):
+def accum_parse(region, date, worksheet, rtus, directory):
     rtu_dict = {}
     for rtu in rtus:
         rtu_dict[rtu] = []
@@ -262,8 +259,8 @@ def accum_parse(region, date, worksheet, rtus):
                 pass
 
     for i, rtu in enumerate(rtus):
-        print('accumulator {}/{}'.format(i + 1, len(rtus)))
-        outfile_dir = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
+        print('accumulator {} {}/{}'.format(rtu, i + 1, len(rtus)))
+        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
 
@@ -288,7 +285,7 @@ def accum_parse(region, date, worksheet, rtus):
                 ))
 
 
-def anout_parse(region, date, worksheet, rtus):
+def anout_parse(region, date, worksheet, rtus, directory):
     rtu_dict = {}
     for rtu in rtus:
         rtu_dict[rtu] = []
@@ -301,8 +298,8 @@ def anout_parse(region, date, worksheet, rtus):
                 pass
 
     for i, rtu in enumerate(rtus):
-        print('analog out {}/{}'.format(i + 1, len(rtus)))
-        outfile_dir = '\\\\bmcd\\dfs\\Clients\\TND\\FirstEnr\\82568_EtfScadaSupprt\\Design\\Substation Projects\\EMS MODEL SCREEN DUMPS\\' + region + '\\' + rtu + '\\'
+        print('analog out {} {}/{}'.format(rtu, i + 1, len(rtus)))
+        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
 
@@ -324,28 +321,27 @@ def anout_parse(region, date, worksheet, rtus):
                 ))
 
 
-def ems_parse(region, date, workbook, rtus):
+def ems_parse(region, date, workbook, rtus, directory):
     archive_fep_files(region, rtus)
     archive_rtu_files(region, workbook.sheet_by_name('BMCD_RTUC and RTU'), rtus)
-    rtu_fep_parse(region, date, workbook.sheet_by_name('BMCD_RTUC and RTU'), rtus)
-    status_parse(region, date, workbook.sheet_by_name('BMCD_STATUS'), rtus)
-    control_parse(region, date, workbook.sheet_by_name('BMCD_CONTROL'), rtus)
-    analog_parse(region, date, workbook.sheet_by_name('BMCD_ANALOG'), rtus)
-    accum_parse(region, date, workbook.sheet_by_name('BMCD_ACCUM'), rtus)
-    anout_parse(region, date, workbook.sheet_by_name('BMCD_ANOUT'), rtus)
+    rtu_fep_parse(region, date, workbook.sheet_by_name('BMCD_RTUC and RTU'), rtus, directory)
+    status_parse(region, date, workbook.sheet_by_name('BMCD_STATUS'), rtus, directory)
+    control_parse(region, date, workbook.sheet_by_name('BMCD_CONTROL'), rtus, directory)
+    analog_parse(region, date, workbook.sheet_by_name('BMCD_ANALOG'), rtus, directory)
+    accum_parse(region, date, workbook.sheet_by_name('BMCD_ACCUM'), rtus, directory)
+    anout_parse(region, date, workbook.sheet_by_name('BMCD_ANOUT'), rtus, directory)
 
 
 if __name__ == '__main__':
     s_time = time.time()
-    file_dir = Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
-    file_full_path = askopenfilename(title='Select EMS Dump Excel file')  # show an "Open" dialog box and return the path to the selected file
-    # file_full_path = 'Z:/Clients/TND/FirstEnr/82568_EtfScadaSupprt/Design/Substation Projects/EMS MODEL SCREEN DUMPS/20180301 - SOUTH - SNAPSHOT - TELEMETRY CROSS-REF'
-    # file_full_path = 'C:/Users/machristiansen/Desktop/20180301 - SOUTH - SNAPSHOT - TELEMETRY CROSS-REF.xlsx'
-    # file_full_path = 'C:/Users/cldavis3/Desktop/20180830 - EAST - SNAPSHOT - TELEMETRY CROSS-REF.xlsx'
+    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+    file_full_path = askopenfilename(
+        title='Select EMS Dump Excel file')  # show an "Open" dialog box and return the path to the selected file
 
     # find where excel file name starts and grab the file name + date of EMS upload dump
     fname_index = file_full_path.rfind('/')
     filename = file_full_path[fname_index+1:]
+    file_dir = file_full_path[:fname_index]
     dump_date = filename[:8]
 
     # decide if east, west, or south
@@ -366,6 +362,6 @@ if __name__ == '__main__':
 
     # parse through dump file for each RTU
     print('Beginning parse of spreadsheet...')
-    ems_parse(ems_region, dump_date, wbook, rtu_list)
+    ems_parse(ems_region, dump_date, wbook, rtu_list, file_dir)
     f_time = time.time()
     print(str(int(f_time-s_time)/60) + ' minutes')
