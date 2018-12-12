@@ -4,6 +4,7 @@ import time
 import xlrd
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
+import zipfile
 
 def grab_rtu_list(worksheet):
     rtus_raw = worksheet.col(2)
@@ -16,98 +17,68 @@ def grab_rtu_list(worksheet):
     #print(rtus)
     return rtus
 
-def archive_fep_files(region, rtus, directory):
-    # archive all existing fep/ch/baud dump csv files
+
+def create_site_folders(region, rtus, directory):
+    outfile_dir = os.path.join(directory, region, '_RTU_FEP')
+    if not os.path.exists(outfile_dir):
+        os.makedirs(outfile_dir)
     for i, rtu in enumerate(rtus):
-        print('archive fep {}/{}'.format(i + 1, len(rtus)))
-
-        # if an archive file is not existing inside the specific rtu folder,
-        #          create one for the purpose of archiving legacy EMS dumps
-        #          archive_dir_dest: archive directory destination
-        archive_dir_dest = directory + '\\' + region + '\\' + '_FEP' + '\\' + 'Archive' + '\\'
-        if not os.path.exists(archive_dir_dest):
-            os.makedirs(archive_dir_dest)
-
-        outfile_dir = directory + '\\' + region + '\\' + '_FEP' + '\\'
-
-        # move all old dump worksheets from inside rtu folder to the archive folder. we want to keep them, but it looks cluttered
-        #           this direction will execute before the csv files are created and put into the rtu folder
-        #           the goal is for all legacy dump files to be archived first allowing for only the new files to remain
-        files2move = os.listdir(outfile_dir)
-        for file in files2move:
-            shutil.move(outfile_dir + file, archive_dir_dest)  # shutil.move(source, destination)
-
-def archive_rtu_files(region, worksheet, rtus, directory):
-
-    rtu_dict = {}
-    for rtu in rtus:
-        rtu_dict[rtu] = []
-
-    for i, entry in enumerate(worksheet.col(2)):
-        if i:
-            try:
-                rtu_dict[entry.value].append(i)
-            except:
-                pass
-
-    # for all rtus in the ems dump excel doc, archive existing csv files in specified folder
-    for i, rtu in enumerate(rtus):
-        print('archive {}/{}'.format(i + 1, len(rtus)))
-
-        # if an archive file is not existing inside the specific rtu folder,
-        #          create one for the purpose of archiving legacy EMS dumps
-        #          archive_dir_dest: archive directory destination
-        archive_dir_dest = directory + '\\' + region + '\\' + rtu + '\\' + 'Archive' + '\\'
-        if not os.path.exists(archive_dir_dest):
-            os.makedirs(archive_dir_dest)
-
-        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
-
-        # move all old dump worksheets from inside rtu folder to the archive folder. we want to keep them, but it looks cluttered
-        #           this direction will execute before the csv files are created and put into the rtu folder
-        #           the goal is for all legacy dump files to be archived first allowing for only the new files to remain
-        files2move = os.listdir(outfile_dir)
-        for file in files2move:
-            shutil.move(outfile_dir + file, archive_dir_dest)  # shutil.move(source, destination)
-
-def rtu_fep_parse(region, date, worksheet, rtus, directory):
-    rtu_dict = {}
-    for rtu in rtus:
-        rtu_dict[rtu] = []
-
-    for i, entry in enumerate(worksheet.col(2)):
-        if i:
-            try:
-                rtu_dict[entry.value].append(i)
-            except:
-                pass
-
-    # for all rtus in the ems dump excel doc, update or add fep/ch/baud csv files in the fep folder
-    for i, rtu in enumerate(rtus):
-        print('fep/ch/baud {}/{}'.format(i + 1, len(rtus)))
-
-        outfile_dir = directory + '\\' + region + '\\' + '_FEP' + '\\'
+        print('creating {} folder {}/{}'.format(rtu, i+1, len(rtus)))
+        outfile_dir = os.path.join(directory, region, rtu)
         if not os.path.exists(outfile_dir):
             os.makedirs(outfile_dir)
 
-        # for the specific rtu, create a fep/ch/baud dump csv document
-        outfile_name = rtu + '_' + date + '_FEP.csv'
-        outfile = outfile_dir + outfile_name
 
-        # print(rtu_dict[rtu])
-        # populate the rtu fep/ch/baud dump csv file with values from ems dump
-        with open(outfile, 'w+') as output_file:
-            output_file.write(
-                'RTUC: 1989, PATH, RTU from RTUC, TYPE_RTU, ADDR_RTU, BAUD_PATH\n')
-            for row in rtu_dict[rtu]:
-                output_file.write('{},{},{},{},{},{}\n'.format(
-                    worksheet.cell(row, 0).value,
-                    worksheet.cell(row, 1).value,
-                    worksheet.cell(row, 2).value,
-                    worksheet.cell(row, 3).value,
-                    worksheet.cell(row, 4).value,
-                    worksheet.cell(row, 5).value,
+def archive_rtu_files(region, rtus, directory):
+    # for all rtus in the ems dump excel doc, archive existing csv files
+    for i, rtu in enumerate(rtus):
+        print('archive {}/{}'.format(i + 1, len(rtus)))
+        site_dir = os.path.join(directory, region, rtu)
+        # Creates an empty archive zip file if no zip file exists
+        with zipfile.ZipFile(os.path.join(site_dir, region + '_' + rtu + '_ARCHIVE' + '.zip'), 'a', zipfile.ZIP_DEFLATED) as myzip:
+            try:
+                # Iterates through files in site directory, if the file is a CSV file extension it is appended
+                # to the archive zip and then deleted
+                for file in os.listdir(site_dir):
+                    if str(file[-3:]) == 'csv':
+                        myzip.write(os.path.join(site_dir, file), file)
+                        os.remove(os.path.join(site_dir, file))
+            except:
+                pass
+        myzip.close()
+
+
+def rtu_fep_parse(region, date, worksheet, directory):
+    outfile_dir = os.path.join(directory, region, '_RTU_FEP')
+    outfile_name = date + '_' + region + '_RTU_FEP.csv'
+    outfile = os.path.join(outfile_dir, outfile_name)
+
+    i = 0
+
+    with open(outfile, 'w+') as output_file:
+        while i < worksheet.nrows:
+            if worksheet.cell(i,0).value == '':
+                break
+            else:
+                output_file.write('{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(
+                    worksheet.cell(i, 0).value,
+                    worksheet.cell(i, 1).value,
+                    worksheet.cell(i, 2).value,
+                    worksheet.cell(i, 3).value,
+                    worksheet.cell(i, 4).value,
+                    worksheet.cell(i, 5).value,
+                    worksheet.cell(i, 6).value,
+                    worksheet.cell(i, 7).value,
+                    worksheet.cell(i, 8).value,
+                    worksheet.cell(i, 9).value,
+                    worksheet.cell(i, 10).value,
+                    worksheet.cell(i, 11).value,
+                    worksheet.cell(i, 12).value,
+                    worksheet.cell(i, 13).value,
                 ))
+            i += 1
+
+
 
 def status_parse(region, date, worksheet, rtus, directory):
     rtu_dict = {}
@@ -125,8 +96,6 @@ def status_parse(region, date, worksheet, rtus, directory):
         print('status {} {}/{}'.format(rtu, i+1, len(rtus)))
         # print(rtu)
         outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
-        if not os.path.exists(outfile_dir):
-            os.makedirs(outfile_dir)
 
         # for the specific rtu, create a status dump csv document
         outfile_name = date + '_' + rtu + '_STATUS.csv'
@@ -173,8 +142,6 @@ def control_parse(region, date, worksheet, rtus, directory):
     for i, rtu in enumerate(rtus):
         print('control {} {}/{}'.format(rtu, i + 1, len(rtus)))
         outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
-        if not os.path.exists(outfile_dir):
-            os.makedirs(outfile_dir)
 
         outfile_name = date + '_' + rtu + '_CONTROL.csv'
         outfile = outfile_dir + outfile_name
@@ -216,8 +183,6 @@ def analog_parse(region, date, worksheet, rtus, directory):
     for i, rtu in enumerate(rtus):
         print('analog {} {}/{}'.format(rtu, i + 1, len(rtus)))
         outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
-        if not os.path.exists(outfile_dir):
-            os.makedirs(outfile_dir)
 
         outfile_name = date + '_' + rtu + '_ANALOG.csv'
         outfile = outfile_dir + outfile_name
@@ -261,8 +226,6 @@ def accum_parse(region, date, worksheet, rtus, directory):
     for i, rtu in enumerate(rtus):
         print('accumulator {} {}/{}'.format(rtu, i + 1, len(rtus)))
         outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
-        if not os.path.exists(outfile_dir):
-            os.makedirs(outfile_dir)
 
         outfile_name = date + '_' + rtu + '_ACCUM.csv'
         outfile = outfile_dir + outfile_name
@@ -300,8 +263,6 @@ def anout_parse(region, date, worksheet, rtus, directory):
     for i, rtu in enumerate(rtus):
         print('analog out {} {}/{}'.format(rtu, i + 1, len(rtus)))
         outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
-        if not os.path.exists(outfile_dir):
-            os.makedirs(outfile_dir)
 
         outfile_name = date + '_' + rtu + '_ANOUT.csv'
         outfile = outfile_dir + outfile_name
@@ -322,9 +283,9 @@ def anout_parse(region, date, worksheet, rtus, directory):
 
 
 def ems_parse(region, date, workbook, rtus, directory):
-    archive_fep_files(region, rtus, directory)
-    archive_rtu_files(region, workbook.sheet_by_name('BMCD_RTUC and RTU'), rtus, directory)
-    rtu_fep_parse(region, date, workbook.sheet_by_name('BMCD_RTUC and RTU'), rtus, directory)
+    create_site_folders(region, rtus, directory)
+    archive_rtu_files(region, rtus, directory)
+    rtu_fep_parse(region, date, workbook.sheet_by_name('BMCD_RTUC and RTU'), directory)
     status_parse(region, date, workbook.sheet_by_name('BMCD_STATUS'), rtus, directory)
     control_parse(region, date, workbook.sheet_by_name('BMCD_CONTROL'), rtus, directory)
     analog_parse(region, date, workbook.sheet_by_name('BMCD_ANALOG'), rtus, directory)
@@ -341,7 +302,8 @@ if __name__ == '__main__':
     # find where excel file name starts and grab the file name + date of EMS upload dump
     fname_index = file_full_path.rfind('/')
     filename = file_full_path[fname_index+1:]
-    file_dir = file_full_path[:fname_index]
+    print(filename)
+    file_dir = os.path.normpath(file_full_path[:fname_index])
     dump_date = filename[:8]
 
     # decide if east, west, or south
