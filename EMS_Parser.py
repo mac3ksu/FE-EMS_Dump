@@ -10,11 +10,11 @@ def grab_rtu_list(worksheet):
     rtus_raw = worksheet.col(2)
     rtus = []
     for rtu in rtus_raw:
-        if rtu.value != '':
-            rtus.append(rtu.value)
+        if rtu.value != '' and rtu.value != '#N/A':
+            rtus.append(str(rtu.value))
     rtus.pop(0)
     rtus.sort()
-    #print(rtus)
+    print(rtus)
     return rtus
 
 
@@ -93,38 +93,39 @@ def status_parse(region, date, worksheet, rtus, directory):
                 pass
 
     for i, rtu in enumerate(rtus):
-        print('status {} {}/{}'.format(rtu, i+1, len(rtus)))
-        # print(rtu)
-        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
+        if len(rtu_dict[rtu]) > 0:
+            print('status {} {}/{}'.format(rtu, i+1, len(rtus)))
+            # print(rtu)
+            outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
 
-        # for the specific rtu, create a status dump csv document
-        outfile_name = date + '_' + rtu + '_STATUS.csv'
-        outfile = outfile_dir + outfile_name
+            # for the specific rtu, create a status dump csv document
+            outfile_name = date + '_' + rtu + '_STATUS.csv'
+            outfile = outfile_dir + outfile_name
 
-        # print(rtu_dict[rtu])
-        # populate the rtu status dump csv file with values from ems dump
-        with open(outfile, 'w+') as output_file:
-            output_file.write(
-                'STATION, RTU, TYPE_RTU, RTU_STATUS, PHYADR, EMS POINT, PRI SITE, SEC SITE2, SINVT, XINVT, MCD, CONCAT, CONV, ID_DEVICE (short), NAME_DEVICE (descriptive)\n')
-            for row in rtu_dict[rtu]:
-                output_file.write('{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(
-                    worksheet.cell(row, 0).value,
-                    worksheet.cell(row, 1).value,
-                    worksheet.cell(row, 2).value,
-                    worksheet.cell(row, 3).value,
-                    worksheet.cell(row, 4).value,
-                    worksheet.cell(row, 5).value,
-                    worksheet.cell(row, 6).value,
-                    worksheet.cell(row, 7).value,
-                    worksheet.cell(row, 8).value,
-                    worksheet.cell(row, 9).value,
-                    worksheet.cell(row, 10).value,
-                    worksheet.cell(row, 11).value,
-                    worksheet.cell(row, 12).value,
-                    worksheet.cell(row, 13).value,
-                    worksheet.cell(row, 14).value,
-                ))
-        # print(rtu + ' completed')
+            # print(rtu_dict[rtu])
+            # populate the rtu status dump csv file with values from ems dump
+            with open(outfile, 'w+') as output_file:
+                output_file.write(
+                    'STATION, RTU, TYPE_RTU, RTU_STATUS, PHYADR, EMS POINT, PRI SITE, SEC SITE2, SINVT, XINVT, MCD, CONCAT, CONV, ID_DEVICE (short), NAME_DEVICE (descriptive)\n')
+                for row in rtu_dict[rtu]:
+                    output_file.write('{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(
+                        worksheet.cell(row, 0).value,
+                        worksheet.cell(row, 1).value,
+                        worksheet.cell(row, 2).value,
+                        worksheet.cell(row, 3).value,
+                        worksheet.cell(row, 4).value,
+                        worksheet.cell(row, 5).value,
+                        worksheet.cell(row, 6).value,
+                        worksheet.cell(row, 7).value,
+                        worksheet.cell(row, 8).value,
+                        worksheet.cell(row, 9).value,
+                        worksheet.cell(row, 10).value,
+                        worksheet.cell(row, 11).value,
+                        worksheet.cell(row, 12).value,
+                        worksheet.cell(row, 13).value,
+                        worksheet.cell(row, 14).value,
+                    ))
+            # print(rtu + ' completed')
 
 
 def control_parse(region, date, worksheet, rtus, directory):
@@ -140,32 +141,33 @@ def control_parse(region, date, worksheet, rtus, directory):
                 pass
 
     for i, rtu in enumerate(rtus):
-        print('control {} {}/{}'.format(rtu, i + 1, len(rtus)))
-        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
+        if len(rtu_dict[rtu]) > 0:
+            print('control {} {}/{}'.format(rtu, i + 1, len(rtus)))
+            outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
 
-        outfile_name = date + '_' + rtu + '_CONTROL.csv'
-        outfile = outfile_dir + outfile_name
+            outfile_name = date + '_' + rtu + '_CONTROL.csv'
+            outfile = outfile_dir + outfile_name
 
-        with open(outfile, 'w+') as output_file:
-            output_file.write('STATION,RTU,TYPE_RTU,RTU CONTROL,CONTROL,PHYADR_RELAY,EMS CONTROL,ID_CTRL,CTRLFUNC,COMMAND,SEXP,OPTIME,WAIT,TIMEOUT,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
-            for row in rtu_dict[rtu]:
-                output_file.write('{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(
-                    worksheet.cell(row, 0).value,
-                    worksheet.cell(row, 1).value,
-                    worksheet.cell(row, 2).value,
-                    worksheet.cell(row, 3).value,
-                    worksheet.cell(row, 4).value,
-                    worksheet.cell(row, 5).value,
-                    worksheet.cell(row, 6).value,
-                    worksheet.cell(row, 7).value,
-                    worksheet.cell(row, 8).value,
-                    worksheet.cell(row, 9).value,
-                    worksheet.cell(row, 10).value,
-                    worksheet.cell(row, 11).value,
-                    worksheet.cell(row, 12).value,
-                    worksheet.cell(row, 13).value,
-                    worksheet.cell(row, 14).value,
-                ))
+            with open(outfile, 'w+') as output_file:
+                output_file.write('STATION,RTU,TYPE_RTU,RTU CONTROL,CONTROL,PHYADR_RELAY,EMS CONTROL,ID_CTRL,CTRLFUNC,COMMAND,SEXP,OPTIME,WAIT,TIMEOUT,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
+                for row in rtu_dict[rtu]:
+                    output_file.write('{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(
+                        worksheet.cell(row, 0).value,
+                        worksheet.cell(row, 1).value,
+                        worksheet.cell(row, 2).value,
+                        worksheet.cell(row, 3).value,
+                        worksheet.cell(row, 4).value,
+                        worksheet.cell(row, 5).value,
+                        worksheet.cell(row, 6).value,
+                        worksheet.cell(row, 7).value,
+                        worksheet.cell(row, 8).value,
+                        worksheet.cell(row, 9).value,
+                        worksheet.cell(row, 10).value,
+                        worksheet.cell(row, 11).value,
+                        worksheet.cell(row, 12).value,
+                        worksheet.cell(row, 13).value,
+                        worksheet.cell(row, 14).value,
+                    ))
 
 
 def analog_parse(region, date, worksheet, rtus, directory):
@@ -181,34 +183,35 @@ def analog_parse(region, date, worksheet, rtus, directory):
                 pass
 
     for i, rtu in enumerate(rtus):
-        print('analog {} {}/{}'.format(rtu, i + 1, len(rtus)))
-        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
+        if len(rtu_dict[rtu]) > 0:
+            print('analog {} {}/{}'.format(rtu, i + 1, len(rtus)))
+            outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
 
-        outfile_name = date + '_' + rtu + '_ANALOG.csv'
-        outfile = outfile_dir + outfile_name
+            outfile_name = date + '_' + rtu + '_ANALOG.csv'
+            outfile = outfile_dir + outfile_name
 
-        with open(outfile, 'w+') as output_file:
-            output_file.write('STATION,RTU,TYPE_RTU,RTU ANALOG,PHYADR,EMS ANALOG,PRI SITE,SEC SITE2,loreas,hireas,RAW LOW,RAW HIGH,ENG LOW,ENG HIGH,NEGATE,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
-            for row in rtu_dict[rtu]:
-                output_file.write('{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(
-                    worksheet.cell(row, 0).value,
-                    worksheet.cell(row, 1).value,
-                    worksheet.cell(row, 2).value,
-                    worksheet.cell(row, 3).value,
-                    worksheet.cell(row, 4).value,
-                    worksheet.cell(row, 5).value,
-                    worksheet.cell(row, 6).value,
-                    worksheet.cell(row, 7).value,
-                    worksheet.cell(row, 8).value,
-                    worksheet.cell(row, 9).value,
-                    worksheet.cell(row, 10).value,
-                    worksheet.cell(row, 11).value,
-                    worksheet.cell(row, 12).value,
-                    worksheet.cell(row, 13).value,
-                    worksheet.cell(row, 14).value,
-                    worksheet.cell(row, 15).value,
-                    worksheet.cell(row, 16).value,
-                ))
+            with open(outfile, 'w+') as output_file:
+                output_file.write('STATION,RTU,TYPE_RTU,RTU ANALOG,PHYADR,EMS ANALOG,PRI SITE,SEC SITE2,loreas,hireas,RAW LOW,RAW HIGH,ENG LOW,ENG HIGH,NEGATE,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
+                for row in rtu_dict[rtu]:
+                    output_file.write('{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n'.format(
+                        worksheet.cell(row, 0).value,
+                        worksheet.cell(row, 1).value,
+                        worksheet.cell(row, 2).value,
+                        worksheet.cell(row, 3).value,
+                        worksheet.cell(row, 4).value,
+                        worksheet.cell(row, 5).value,
+                        worksheet.cell(row, 6).value,
+                        worksheet.cell(row, 7).value,
+                        worksheet.cell(row, 8).value,
+                        worksheet.cell(row, 9).value,
+                        worksheet.cell(row, 10).value,
+                        worksheet.cell(row, 11).value,
+                        worksheet.cell(row, 12).value,
+                        worksheet.cell(row, 13).value,
+                        worksheet.cell(row, 14).value,
+                        worksheet.cell(row, 15).value,
+                        worksheet.cell(row, 16).value,
+                    ))
 
 
 def accum_parse(region, date, worksheet, rtus, directory):
@@ -224,28 +227,29 @@ def accum_parse(region, date, worksheet, rtus, directory):
                 pass
 
     for i, rtu in enumerate(rtus):
-        print('accumulator {} {}/{}'.format(rtu, i + 1, len(rtus)))
-        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
+        if len(rtu_dict[rtu])>0:
+            print('accumulator {} {}/{}'.format(rtu, i + 1, len(rtus)))
+            outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
 
-        outfile_name = date + '_' + rtu + '_ACCUM.csv'
-        outfile = outfile_dir + outfile_name
+            outfile_name = date + '_' + rtu + '_ACCUM.csv'
+            outfile = outfile_dir + outfile_name
 
-        with open(outfile, 'w+') as output_file:
-            output_file.write('STATION,RTU,TYPE_RTU,RTU ACCUMULATOR,PHYADR_PULSE,EMS ACCUMULATOR,PRI SITE,SEC SITE2,SCALE_PULSE,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
-            for row in rtu_dict[rtu]:
-                output_file.write('{},{},{},{},{},{},{},{},{},{},{}\n'.format(
-                    worksheet.cell(row, 0).value,
-                    worksheet.cell(row, 1).value,
-                    worksheet.cell(row, 2).value,
-                    worksheet.cell(row, 3).value,
-                    worksheet.cell(row, 4).value,
-                    worksheet.cell(row, 5).value,
-                    worksheet.cell(row, 6).value,
-                    worksheet.cell(row, 7).value,
-                    worksheet.cell(row, 8).value,
-                    worksheet.cell(row, 9).value,
-                    worksheet.cell(row, 10).value,
-                ))
+            with open(outfile, 'w+') as output_file:
+                output_file.write('STATION,RTU,TYPE_RTU,RTU ACCUMULATOR,PHYADR_PULSE,EMS ACCUMULATOR,PRI SITE,SEC SITE2,SCALE_PULSE,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
+                for row in rtu_dict[rtu]:
+                    output_file.write('{},{},{},{},{},{},{},{},{},{},{}\n'.format(
+                        worksheet.cell(row, 0).value,
+                        worksheet.cell(row, 1).value,
+                        worksheet.cell(row, 2).value,
+                        worksheet.cell(row, 3).value,
+                        worksheet.cell(row, 4).value,
+                        worksheet.cell(row, 5).value,
+                        worksheet.cell(row, 6).value,
+                        worksheet.cell(row, 7).value,
+                        worksheet.cell(row, 8).value,
+                        worksheet.cell(row, 9).value,
+                        worksheet.cell(row, 10).value,
+                    ))
 
 
 def anout_parse(region, date, worksheet, rtus, directory):
@@ -261,25 +265,26 @@ def anout_parse(region, date, worksheet, rtus, directory):
                 pass
 
     for i, rtu in enumerate(rtus):
-        print('analog out {} {}/{}'.format(rtu, i + 1, len(rtus)))
-        outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
+        if len(rtu_dict[rtu]) > 0:
+            print('analog out {} {}/{}'.format(rtu, i + 1, len(rtus)))
+            outfile_dir = directory + '\\' + region + '\\' + rtu + '\\'
 
-        outfile_name = date + '_' + rtu + '_ANOUT.csv'
-        outfile = outfile_dir + outfile_name
+            outfile_name = date + '_' + rtu + '_ANOUT.csv'
+            outfile = outfile_dir + outfile_name
 
-        with open(outfile, 'w+') as output_file:
-            output_file.write('STATION,RTU,TYPE_RTU,RTU ACCUMULATOR,PHYADR_PULSE,EMS ACCUMULATOR,PRI SITE,SEC SITE2,SCALE_PULSE,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
-            for row in rtu_dict[rtu]:
-                output_file.write('{},{},{},{},{},{},{},{}\n'.format(
-                    worksheet.cell(row, 0).value,
-                    worksheet.cell(row, 1).value,
-                    worksheet.cell(row, 2).value,
-                    worksheet.cell(row, 3).value,
-                    worksheet.cell(row, 4).value,
-                    worksheet.cell(row, 5).value,
-                    worksheet.cell(row, 6).value,
-                    worksheet.cell(row, 7).value,
-                ))
+            with open(outfile, 'w+') as output_file:
+                output_file.write('STATION,RTU,TYPE_RTU,RTU ACCUMULATOR,PHYADR_PULSE,EMS ACCUMULATOR,PRI SITE,SEC SITE2,SCALE_PULSE,ID_DEVICE (short),NAME_DEVICE (descriptive)\n')
+                for row in rtu_dict[rtu]:
+                    output_file.write('{},{},{},{},{},{},{},{}\n'.format(
+                        worksheet.cell(row, 0).value,
+                        worksheet.cell(row, 1).value,
+                        worksheet.cell(row, 2).value,
+                        worksheet.cell(row, 3).value,
+                        worksheet.cell(row, 4).value,
+                        worksheet.cell(row, 5).value,
+                        worksheet.cell(row, 6).value,
+                        worksheet.cell(row, 7).value,
+                    ))
 
 
 def ems_parse(region, date, workbook, rtus, directory):
