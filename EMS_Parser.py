@@ -323,7 +323,8 @@ if __name__ == '__main__':
     print(ems_region)
     print('Opening workbook...')
     wbook = xlrd.open_workbook(file_full_path)
-    wsheet = wbook.sheet_by_index(0)
+    # wsheet = wbook.sheet_by_index(0)
+    wsheet = wbook.sheet_by_name('BMCD_RTUC and RTU')
     print('Grabbing RTU list...')
     rtu_list = grab_rtu_list(wsheet)
 
