@@ -48,6 +48,7 @@
       <find>glob</find>
       <find>Z:</find>
       <find>archive</find>
+      <find>file_full_path</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -74,7 +75,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -86,6 +86,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -197,9 +198,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/EMS_Parser.py</url>
-          <line>362</line>
-          <option name="timeStamp" value="1" />
+          <url>file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/xlrd/sheet.py</url>
+          <line>319</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/codecs.py</url>
+          <line>309</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
